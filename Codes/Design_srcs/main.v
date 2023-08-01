@@ -27,7 +27,7 @@ module main(
                   .EXP_DIFF(Shift_amt)
                   );
                   
-    barrel_shifter f2(.In(M_shift),
+    shifter f2(.In(M_shift),
                       .Shift(Shift_amt),
                       .Out(Mshift_out)
                       );
@@ -61,7 +61,7 @@ module main(
                   
     assign shift_en = {4'b0,CR};
     
-    barrel_shifter f5(.In(MR),
+    shifter f5(.In(MR),
                       .Shift(shift_en),
                       .Out(MR_barrel)
                       );
