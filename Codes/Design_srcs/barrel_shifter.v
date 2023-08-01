@@ -1,88 +1,37 @@
 `timescale 1ns / 1ps
 
-module barrel_shifter(
+module shifter(
     input [23:0] In,
     input [4:0] Shift,
     output [23:0] Out
     );
 	 
- wire [23:0]a;
- genvar i;
- 
- generate
-	begin:b1
-		for(i=0;i<23;i=i+1)
-			begin:b2
-			Mux M(In[i] , In[i+1] , Shift[0] , a[i]);
-			end
-	 Mux M1(In[23] , 1'b0 , Shift[0] , a[23]);
-	end
-endgenerate
-
-wire [23:0]a1;
-genvar j , k;
-
-generate
-	begin:b3
-		for(j=0;j<22;j=j+1)
-			begin:b4
-		    	Mux M2(a[j] , a[j+2] , Shift[1] , a1[j]);
-			end
-	    for(k=22;k<24;k=k+1)
-			begin:b5
-			   Mux M3(a[k] , 1'b0 , Shift[1] , a1[k]);
-			end
-	end
-endgenerate
-
-genvar p , q;
-wire [23:0]a2;
-
-generate
-	begin:b6
-		for(p=0;p<20;p=p+1)
-			begin:b7
-			 Mux M4(a1[p] , a1[p+4] , Shift[2] , a2[p]);
-			end
-		for(k=20;k<24;k=k+1)
-			begin:b8
-			 Mux M5(a1[k] , 1'b0 , Shift[2] , a2[k]);
-			end
-	end
-endgenerate
-
-genvar x , y;
-wire [23:0]a3;
-
-generate
-	begin
-		for(x=0;x<16;x=x+1)
-		 begin:b9
-		  Mux M6(a2[x] , a2[x+8] , Shift[3] , a3[x]);
-		 end
-		for(y=16;y<24;y=y+1)
-		 begin:b10
-		  Mux M7(a2[y] , 1'b0 , Shift[3] , a3[y]);
-		 end
-	end
-endgenerate
-
-genvar s , t;
-wire [23:0]a4;
-
-generate
-	begin:b11
-	for(s=0;s<8;s=s+1)
-		begin:b12
-		 Mux M8(a3[s] , a3[s+4] , Shift[4] , a4[s]);
-		end
-	for(t=8;t<24;t=t+1)
-		begin:b13
-		 Mux M9(a3[t] , 1'b0 , Shift[4] , a4[t]);
-		end
-	end
-endgenerate
-
-assign Out = a4;
-
+	case(Shift)
+		5'd0 : Out = In;
+		5'd1 : Out = {1'b0,In[23:1]};
+		5'd2 : Out = {2'b0,In[23:2]};
+		5'd3 : Out = {3'b0,In[23:3]};
+		5'd4 : Out = {4'b0,In[23:4]};
+		5'd5 : Out = {5'b0,In[23:5]};
+		5'd6 : Out = {6'b0,In[23:6]};
+		5'd7 : Out = {7'b0,In[23:7]};
+		5'd8 : Out = {8'b0,In[23:8]};
+		5'd9 : Out = {9'b0,In[23:9]};
+		5'd10 : Out = {10'b0,In[23:10]};
+		5'd11 : Out = {11'b0,In[23:11]};
+		5'd12 : Out = {12'b0,In[23:12]};
+		5'd13 : Out = {13'b0,In[23:13]};
+		5'd14 : Out = {14'b0,In[23:14]};
+		5'd15 : Out = {15'b0,In[23:15]};
+		5'd16 : Out = {16'b0,In[23:16]};
+		5'd17 : Out = {17'b0,In[23:17]};
+		5'd18 : Out = {18'b0,In[23:18]};
+		5'd19 : Out = {19'b0,In[23:19]};
+		5'd20 : Out = {20'b0,In[23:20]};
+		5'd21: Out = {21'b0,In[23:21]};
+		5'd22: Out = {22'b0,In[23:22]};
+		5'd23: Out = {23'b0,In[23:23]};
+		5'd24: Out = {24'b0};
+		default : Out = In;
+	endcase
 endmodule
