@@ -5,7 +5,7 @@ The design flow is as follows :
   * One is concatenated to the MSB of mantissa.
 * **Comparator**
   * Both the mantissas are compared, the difference between the exponents and the smaller mantissa is returned.
-* **Barrel Shifter**
+* **Shifter**
   * The smaller mantissa is right shifted by the difference of the exponents.
 * **Sign Out**
   * Based on the sign of Add_Sub and the signs of mantissas, the result sign out is returned
