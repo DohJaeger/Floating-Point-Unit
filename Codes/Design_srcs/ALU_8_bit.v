@@ -8,6 +8,7 @@ module ALU_8_bit(
     output Cout
     );
     
+    wire hello;
     wire [7:0] B_dash;
     wire [8:0] w_C;
     wire [7:0] w_G, w_P, w_SUM;
