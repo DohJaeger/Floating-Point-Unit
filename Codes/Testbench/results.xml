@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1730661827" />
+    <testcase name="basic_count" classname="testbench" file="/home/rahul/32_Bit_Floating_Point_Adder-Subtractor_with_Verilog/Codes/Testbench/testbench.py" lineno="5" time="0.008376836776733398" sim_time_ns="51.001" ratio_time="6088.33636840757" />
+  </testsuite>
+</testsuites>
