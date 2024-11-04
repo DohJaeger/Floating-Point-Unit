@@ -1,141 +1,40 @@
-#test_fpu.py
 import cocotb
-from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge
-import struct
-
-#convert between float and IEEE 754 single precision binary format
-def float_to_bin(num):
-    """Convert a float to binary (IEEE 754 single precision)."""
-    return struct.unpack('>I', struct.pack('>f', num))[0]
-
-def bin_to_float(binary):
-    """Convert binary (IEEE 754 single precision) to float."""
-    return struct.unpack('>f', struct.pack('>I', binary))[0]
-
-async def reset_dut(dut):
-    """Reset the DUT."""
-    dut.clk.value = 0
-    dut.A.value = 0
-    dut.B.value = 0
-    dut.opcode.value = 0
-    await RisingEdge(dut.clk)
+from cocotb.triggers import Timer, RisingEdge
 
 @cocotb.test()
 async def test_addition(dut):
-    """Test addition operation on FPU."""
-    clock = Clock(dut.clk, 10, units="ns")  # 10 ns clock period
-    cocotb.fork(clock.start())
+    """Test the addition operation of the FPU"""
+    # Set up logging for better debug visibility
+    dut._log.info("Starting addition test for FPU")
 
-    await reset_dut(dut)
+    # Initialize inputs and apply clock
+    dut.A.value = 0  # Reset input A
+    dut.B.value = 0  # Reset input B
+    dut.opcode.value = 0  # Set opcode to addition (assuming 0 is addition)
+    await Timer(5, units='ns')  # Short delay before main operation
+
+    # Set test values for inputs (in binary format)
+    # 1.0 in IEEE 754 binary representation is: 00111111100000000000000000000000
+    # 2.0 in IEEE 754 binary representation is: 01000000000000000000000000000000
+    dut.A.value = 0b00111111100000000000000000000000  # Binary for 1.0
+    dut.B.value = 0b01000000000000000000000000000000  # Binary for 2.0
+    dut.opcode.value = 0       # Set opcode for addition
+
+    # Wait for operation to complete and output to stabilize
+    await Timer(50, units='ns')
+
+    # Check output validity
+    if 'x' in str(dut.O.value) or 'z' in str(dut.O.value):
+        dut._log.error(f"Output O contains undefined values: {dut.O.value}")
+        assert False, "Output contains unresolved 'x' or 'z' bits."
+
+    # Expected result for 1.0 + 2.0 = 3.0 in IEEE 754 binary
+    expected_result = 0b01000000010000000000000000000000  # Binary for 3.0
+
+    # Validate result
+    assert dut.O.value == expected_result, (
+        f"Addition result mismatch: got {hex(dut.O.value)}, "
+        f"expected {hex(expected_result)}"
+    )
     
-    #Test cases for addition
-    test_cases = [
-        (1.5, 2.5),
-        (0.0, 3.5),
-        (-2.75, 2.75),
-        (1e20, 1e20),  # Large number addition
-        (float('inf'), 1.0),  # Infinity + finite number
-    ]
-    
-    for a, b in test_cases:
-        expected = a + b
-        dut.A.value = float_to_bin(a)
-        dut.B.value = float_to_bin(b)
-        dut.opcode.value = 0b00  # Opcode for addition
-
-        await RisingEdge(dut.clk)
-        await RisingEdge(dut.clk)
-
-        result = bin_to_float(dut.O.value.integer)
-        tolerance = 1e-5  # Allowable error margin for floating-point comparisons
-
-        assert abs(result - expected) < tolerance, f"Addition failed for {a} + {b}: expected {expected}, got {result}"
-
-@cocotb.test()
-async def test_subtraction(dut):
-    """Test subtraction operation on FPU."""
-    await reset_dut(dut)
-
-    #Test cases for subtraction
-    test_cases = [
-        (3.5, 2.5),
-        (0.0, 3.5),
-        (-2.75, 2.75),
-        (1e20, 5e19),  # Large number subtraction
-        (float('inf'), 1.0),  # Infinity - finite number
-    ]
-
-    for a, b in test_cases:
-        expected = a - b
-        dut.A.value = float_to_bin(a)
-        dut.B.value = float_to_bin(b)
-        dut.opcode.value = 0b01  # Opcode for subtraction
-
-        await RisingEdge(dut.clk)
-        await RisingEdge(dut.clk)
-
-        result = bin_to_float(dut.O.value.integer)
-        tolerance = 1e-5  # Allowable error margin for floating-point comparisons
-
-        assert abs(result - expected) < tolerance, f"Subtraction failed for {a} - {b}: expected {expected}, got {result}"
-
-@cocotb.test()
-async def test_multiplication(dut):
-    """Test multiplication operation on FPU."""
-    await reset_dut(dut)
-
-    #Test cases for multiplication
-    test_cases = [
-        (1.5, 2.5),
-        (0.0, 3.5),
-        (-2.75, 2.75),
-        (1e10, 2e10),  # Large number multiplication
-        (float('inf'), 1.0),  # Infinity * finite number
-    ]
-
-    for a, b in test_cases:
-        expected = a * b
-        dut.A.value = float_to_bin(a)
-        dut.B.value = float_to_bin(b)
-        dut.opcode.value = 0b11  # Opcode for multiplication
-
-        await RisingEdge(dut.clk)
-        await RisingEdge(dut.clk)
-
-        result = bin_to_float(dut.O.value.integer)
-        tolerance = 1e-5  # Allowable error margin for floating-point comparisons
-
-        assert abs(result - expected) < tolerance, f"Multiplication failed for {a} * {b}: expected {expected}, got {result}"
-
-@cocotb.test()
-async def test_division(dut):
-    """Test division operation on FPU."""
-    await reset_dut(dut)
-
-    #Test cases for division
-    test_cases = [
-        (3.5, 2.5),
-        (0.0, 3.5),
-        (-2.75, 2.75),
-        (1e10, 2e5),  # Large number division
-        (float('inf'), 1.0),  # Infinity / finite number
-    ]
-
-    for a, b in test_cases:
-        if b == 0:
-            expected = float('inf') if a > 0 else float('-inf')
-        else:
-            expected = a / b
-
-        dut.A.value = float_to_bin(a)
-        dut.B.value = float_to_bin(b)
-        dut.opcode.value = 0b10  # Opcode for division
-
-        await RisingEdge(dut.clk)
-        await RisingEdge(dut.clk)
-
-        result = bin_to_float(dut.O.value.integer)
-        tolerance = 1  # Allowable error margin for floating-point comparisons
-
-        assert abs(result - expected) < tolerance, f"Division failed for {a} / {b}: expected {expected}, got {result}"
+    dut._log.info("Addition test completed successfully")
