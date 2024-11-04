@@ -1,6 +1,17 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1730661827" />
-    <testcase name="basic_count" classname="testbench" file="/home/rahul/32_Bit_Floating_Point_Adder-Subtractor_with_Verilog/Codes/Testbench/testbench.py" lineno="5" time="0.008376836776733398" sim_time_ns="51.001" ratio_time="6088.33636840757" />
+    <property name="random_seed" value="1730662833" />
+    <testcase name="test_addition" classname="test_fpu" file="/home/rahul/32_Bit_Floating_Point_Adder-Subtractor_with_Verilog/Codes/Testbench/test_fpu.py" lineno="24" time="0.0011227130889892578" sim_time_ns="30.001" ratio_time="26721.87604671905">
+      <failure message="Test failed with RANDOM_SEED=1730662833" />
+    </testcase>
+    <testcase name="test_subtraction" classname="test_fpu" file="/home/rahul/32_Bit_Floating_Point_Adder-Subtractor_with_Verilog/Codes/Testbench/test_fpu.py" lineno="55" time="0.0002601146697998047" sim_time_ns="4.998999999999999" ratio_time="19218.447017415212">
+      <failure message="Test failed with RANDOM_SEED=1730662833" />
+    </testcase>
+    <testcase name="test_multiplication" classname="test_fpu" file="/home/rahul/32_Bit_Floating_Point_Adder-Subtractor_with_Verilog/Codes/Testbench/test_fpu.py" lineno="83" time="0" sim_time_ns="0" ratio_time="nan">
+      <failure message="Test failed with RANDOM_SEED=1730662833" />
+    </testcase>
+    <testcase name="test_division" classname="test_fpu" file="/home/rahul/32_Bit_Floating_Point_Adder-Subtractor_with_Verilog/Codes/Testbench/test_fpu.py" lineno="111" time="0" sim_time_ns="0" ratio_time="nan">
+      <failure message="Test failed with RANDOM_SEED=1730662833" />
+    </testcase>
   </testsuite>
 </testsuites>
