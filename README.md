@@ -1,4 +1,4 @@
-# 32_Bit_Floating_Point_Adder-Subtractor_with_Verilog
+# IEEE754_FPU_with_Verilog
 This is a 32 bit floating point adder. The inputs are two 32 bit single precision numbers and the the third input is Add_Sub (A_S = 0 => Add else Subtract).
 The design flow is as follows : 
 * **Prepender**
