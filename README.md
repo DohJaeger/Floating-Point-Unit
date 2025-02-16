@@ -14,4 +14,7 @@ The design flow is as follows :
   * IF Carry out is 1, the exponent is incremented and the mantissa is shifted & the 24th bit is set to one
 * **Leading zero counter**
   * The number of leading zeros in the above mantissa is counted.
-  * Based on the number of zeros, the exponent is decremented to standardize the result.  
+  * Based on the number of zeros, the exponent is decremented to standardize the result.
+  
+# BFloat16 Mult-Add
+Designed a BFolat16 Multiplier and adder unit in Verilog
